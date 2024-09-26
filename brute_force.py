@@ -1,54 +1,29 @@
 from itertools import combinations
-import data
 from dataclasses import dataclass
 from typing import List
 from usefull_package import Action
 
-
-
-@dataclass
-class Client:
-    name: str
-    somme_total_action: float = 500
-    actions_achetees: List[Action] = None
-
-    @property
-    def control_somme_max(self) -> bool:
-        if self.somme_total_action > 500:
-            print("Solde maximum dépassé")
-            return False
-        return True
-
-
 class Application:
     def __init__(self) -> None:
         self.actions: List[Action] = []
-        self.clients: List[Client] = [Client("Client1")]
+      
+    def calcul_benefice(self, file_name) -> None:
+        dict_action = Action.parse_csv(file_name)
 
-    def calcul_benefice(self) -> None:
-        self.actions = Action.from_dict(data.actions)
-        
+        self.actions = Action.from_dict([
+            {"action": data.action, "cost": data.cost, "percent": data.percent} for data in dict_action ])
+
         for action in self.actions:
-            action.calcule_benefice()
+            action.calcule_benefice
 
-        for client in self.clients:
-            if client.control_somme_max:
-                print(
-                    f"\nLe client {client.name} peut "
-                    "acheter les combinaisons suivantes:"
-                )
-                self.meilleure_combinaison(client, self.actions)
-
-    def meilleure_combinaison(self,
-                              client: Client,
-                              actions: List[Action]) -> None:
+    def meilleure_combinaison(self, budget) -> None:
         max_benefice = 0
         meilleure_combinaison = []
 
-        for r in range(1, len(actions) + 1):
-            for combinaison in combinations(actions, r):
+        for r in range(1, len(self.actions) + 1):
+            for combinaison in combinations(self.actions, r):
                 cout_total = sum(action.cost for action in combinaison)
-                if cout_total <= client.somme_total_action:
+                if cout_total <= budget:
                     benefice_total = sum(
                         action.benefite for action in combinaison
                     )
@@ -57,7 +32,7 @@ class Application:
                         meilleure_combinaison = combinaison
 
         if meilleure_combinaison:
-            print(f"Meilleure combinaison pour {client.name} :")
+            print(f"Meilleure combinaison :")
             cout_total = sum(action.cost for
                              action in meilleure_combinaison)
             for action in meilleure_combinaison:
@@ -72,8 +47,11 @@ class Application:
 
 
 def main():
+    budget = 500
     app = Application()
-    app.calcul_benefice()
+    app.calcul_benefice("data_set\Liste_actions_2.csv")
+    app.meilleure_combinaison(budget)
+
 
 
 if __name__ == "__main__":
