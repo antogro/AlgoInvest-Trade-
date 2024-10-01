@@ -5,25 +5,22 @@ from typing import List, Dict
 
 @dataclass
 class Action:
+    """Action class to hold the action details"""
+
     action: str
     cost: float
     percent: float
     benefite: float = 0.0
-    ratio: float = 0.0
 
     @classmethod
     def from_dict(cls, data_dict: Dict[str, tuple]) -> List["Action"]:
         return [
-            cls(data["action"], data["cost"], data["percent"]) for data in data_dict 
+            cls(data["action"], data["cost"], data["percent"]) for data in data_dict
         ]
-    
+
     @property
     def calcule_benefice(self) -> None:
         self.benefite = self.percent * self.cost
-
-    @property
-    def calcul_ratio(self) -> float:
-        self.ratio = self.benefite / self.cost
 
     def parse_csv(file_name: str) -> list["Action"]:
         """Return a list of Action object from a csv file"""
@@ -41,5 +38,4 @@ class Action:
                 action = Action(row[0], cost, percent)
                 actions.append(action)
 
-        # return sorted(actions, key=lambda action: action.profit, reverse=True)
         return actions

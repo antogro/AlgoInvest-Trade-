@@ -4,3 +4,7 @@ data_set/Liste_actions_3.csv
 data.py
 __pycache__/usefull_package.cpython-312.pyc
 data.csv
+mermaid.svg
+mermaid.mmd
+__pycache__/action_object.cpython-312.pyc
+.gitignore
